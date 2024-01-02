@@ -4,18 +4,16 @@ const {TodoModel} = require('../Models/todo.model.js')
 async function CreateTodo(req, res) {
     const { todo, status } = req.body;
     const userID = req.body.userID;
+    if (!todo || !status) {
+        return res.status(201).send({ "error": "Input data error" });
+    }
     try {
-        if (!todo || !status) {
-            return res.status(400).send({ "error": "Input data error" });
-        }
-
         const data = new TodoModel({ todo, status, userID });
         console.log(data)
         await data.save();
-
-         res.status(201).send({ "msg": "New todo has been created" });
+        res.status(201).send({ "msg": "New todo has been created" });
     } catch (error) {
-         res.status(500).send({ "msg": "Something went wrong while creating todo", "err": error.message });
+        res.status(500).send({ "msg": "Something went wrong while creating todo", "err": error.message });
     }
 }
 
