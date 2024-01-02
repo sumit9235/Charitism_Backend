@@ -5,7 +5,10 @@ async function CreateTodo(req, res) {
     const { todo, status } = req.body;
     const userID = req.body.userID;
     if (!todo ) {
-        return res.status(201).send({ "error": "Input data error" });
+        return res.status(201).send({ "error": " todo data error" });
+    }
+    if(status === undefined){
+        return res.status(201).send({ "error": " status data error" });
     }
     try {
         const data = new TodoModel({ todo, status, userID });
