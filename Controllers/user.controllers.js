@@ -7,7 +7,10 @@ async function HandelUserSignup(req, res) {
     if (!name || !email || !password) {
          res.status(400).send({ "msg": "Incomplete input data" });
     }
-
+    let user = await UserModel.findOne({email:email})
+    if(user){
+        return res.status(201).send({"msg":"user already exist! please login with credentials"})
+    }
     try {
         bcrypt.hash(password, 4, async (err, hash) => {
             if (err) {
