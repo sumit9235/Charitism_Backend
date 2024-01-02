@@ -4,7 +4,7 @@ const {TodoModel} = require('../Models/todo.model.js')
 async function CreateTodo(req, res) {
     const { todo, status } = req.body;
     const userID = req.body.userID;
-    if (!todo || !status) {
+    if (!todo || status === undefined) {
         return res.status(201).send({ "error": "Input data error" });
     }
     try {
