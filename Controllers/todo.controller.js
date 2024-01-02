@@ -13,9 +13,9 @@ async function CreateTodo(req, res) {
         console.log(data)
         await data.save();
 
-        return res.status(201).send({ "msg": "New todo has been created" });
+         res.status(201).send({ "msg": "New todo has been created" });
     } catch (error) {
-        return res.status(500).send({ "msg": "Something went wrong while creating todo", "err": error.message });
+         res.status(500).send({ "msg": "Something went wrong while creating todo", "err": error.message });
     }
 }
 
@@ -26,9 +26,9 @@ async function GetTodo(req,res){
         if(!data){
             return res.json({"msg":"No Data Found!!"})
         }
-        return res.status(200).json({"msg":data})
+         res.status(200).json({"msg":data})
     } catch (error) {
-        return res.status(500).send(error.message)
+         res.status(500).send(error.message)
     }
 }
 
@@ -40,9 +40,9 @@ async function GetTodoById(req,res){
         if(!data){
             return res.json({"msg":"No Data Found!!"})
         }
-        return res.status(200).json({"msg":data})
+         res.status(200).json({"msg":data})
     } catch (error) {
-        return res.status(500).send(error.message)
+        res.status(500).send(error.message)
     }
 }
 
@@ -55,9 +55,9 @@ async function RemoveTodo(req,res){
             return res.status(201).send({"msg":"Todo not found"})
         }
         await TodoModel.findById({_id:id})
-        return res.status(200).send({"msg":"Todo Successfully Removed!!"})
+        res.status(200).send({"msg":"Todo Successfully Removed!!"})
     } catch (error) {
-        return res.status(500).send(error.message)
+         res.status(500).send(error.message)
     }
 }
 
@@ -74,7 +74,7 @@ async function UpdateTodo(req,res){
             return res.status(400).send({ "error": "No update parameters provided" });
         }
         await TodoModel.findOneAndUpdate({_id:id},data,{ new: true });
-        return res.status(200).send({ "msg": "Todo data has been updated from database" });
+        res.status(200).send({ "msg": "Todo data has been updated from database" });
     } catch (error) {
         return res.status(500).send(error.message)
     }
