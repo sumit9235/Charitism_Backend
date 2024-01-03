@@ -3,57 +3,65 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 async function HandelUserSignup(req, res) {
     const { name, email, password } = req.body;
-    
-    if (!name || !email || !password) {
-         res.status(400).send({ "msg": "Incomplete input data" });
+  
+    // Check if input data is valid
+    if (
+      (!name || typeof name !== 'string') ||
+      (!email || typeof email !== 'string' || !isValidEmail(email)) || 
+      (!password || typeof password !== 'string')
+    ) {
+      res.status(400).send({ "msg": "Incomplete or invalid input data" });
     }
-    let user = await UserModel.findOne({email:email})
-    if(user){
-        return res.status(201).send({"msg":"user already exist! please login with credentials"})
+  
+    let user = await UserModel.findOne({ email: email });
+  
+    if (user) {
+      return res.status(409).send({ "msg": "User already exists! Please login with credentials" });
     }
+  
     try {
-        bcrypt.hash(password, 4, async (err, hash) => {
-            if (err) {
-                 res.status(500).send({ "msg": "Internal server error", "err": err.message });
-            } else {
-                const user = new UserModel({ name, email, password: hash });
-                await user.save();
-                 res.status(201).send({ "msg": "New user has been registered" });
-            }
-        });
+      const hash = await bcrypt.hash(password, 4);
+      const newUser = new UserModel({ name, email, password: hash });
+      await newUser.save();
+      res.status(201).send({ "msg": "New user has been registered" });
     } catch (err) {
-         res.status(500).send({ "msg": "Something went wrong while registering", "err": err.message });
+      res.status(500).send({ "msg": "Something went wrong while registering", "err": err.message });
     }
-}
+  }
+
+  function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
 
 async function HandelUserLogin(req, res) {
     const { email, password } = req.body;
 
     if (!email || !password) {
-         res.status(400).send({ "msg": "Incomplete input data" });
+        res.status(400).send({ "msg": "Incomplete input data" });
     }
 
     try {
         const user = await UserModel.findOne({ email });
-        
+
         if (user) {
             bcrypt.compare(password, user.password, (err, result) => {
                 if (result) {
-                    let token = jwt.sign({ userID: user._id }, "SecretKey", { expiresIn: "15m" });
-                     res.send({ "msg": "User logged in successfully", "token": token });
+                    let token = jwt.sign({ userID: user._id }, process.env.Access_key, { expiresIn: "15m" });
+                    res.send({ "msg": "User logged in successfully", "token": token });
                 } else {
-                     res.status(401).send({ "msg": "Wrong credentials" });
+                    res.status(401).send({ "msg": "Wrong credentials" });
                 }
             });
         } else {
-             res.status(404).send({ "msg": "User not found" });
+            res.status(404).send({ "msg": "User not found" });
         }
     } catch (err) {
-         res.status(500).send({ "msg": "Something went wrong", "err": err.message });
+        res.status(500).send({ "msg": "Something went wrong", "err": err.message });
     }
 }
 
-module.exports={
+module.exports = {
     HandelUserSignup,
     HandelUserLogin
 }

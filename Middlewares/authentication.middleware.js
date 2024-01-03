@@ -1,24 +1,27 @@
-const jwt= require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 require('dotenv').config()
-const auth=async(req,res,next)=>{
+const auth = async (req, res, next) => {
     try {
-        const token = req.headers.authorization
-        if(!token){
-            return res.status(401).send("Token expired Please login again")
-        }
-        const TokenValid = jwt.verify(token,process.env.Access_key);
+        const token = req.headers.authorization;
 
-        if(!TokenValid){
-            return res.send("Authtication failed")
+        if (!token) {
+            return res.status(401).send("Please log in again. Token expired or not found!");
         }
-        req.body.userID = TokenValid.userID;
+
+        const decodedToken = jwt.verify(token, process.env.Access_key);
+
+        if (!decodedToken) {
+            return res.status(401).send("Authentication failed. Invalid token found");
+        }
+
+        req.body.userID = decodedToken.userID;
         next();
     } catch (err) {
-        console.log("error auth")
-        return res.send(err.message)
+        console.error("Error in authentication middleware:", err.message);
+        return res.status(500).send("Internal server error");
     }
-}
+};
 
-module.exports={
+module.exports = {
     auth
 }
