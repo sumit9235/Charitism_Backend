@@ -1,7 +1,7 @@
 # Charitism_Backend
 ## Todo_Management_System API Documentation
 
-**Description**: A Simple Crud Application backend for an todo application using nodejs, express.js and MongoDB.
+**Description**: A Simple Crud Application backend for an todo application using nodejs, express.js and MongoDB. A proper rate limiting has been implemented to limit number of request's per minutes and a logger is also implemented to log every http request.
 
 **Deployed_Link**: https://tiny-cyan-calf-vest.cyclic.app/
 
@@ -28,6 +28,8 @@ Bearer Token authentication is required for some routes.
   - In: header
 
 ## Endpoints
+
+**Swagger Documentation** :- https://tiny-cyan-calf-vest.cyclic.app/api-docs
 
 ### User Signup
 
