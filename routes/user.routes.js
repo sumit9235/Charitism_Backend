@@ -7,7 +7,7 @@ const {
 } = require('../Controllers/user.controllers.js');
 
 
-userRouter.use(limiter)
+userRouter.use(limiter) //using rate limitger to limit number of request to 8 requests per minute
 userRouter.post("/signup", HandelUserSignup)
 userRouter.post("/login", HandelUserLogin)
 

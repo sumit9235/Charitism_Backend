@@ -22,7 +22,7 @@ async function HandelUserSignup(req, res) {
       return res.status(409).send({ "msg": "User already exists! Please login with credentials" });
     }
 
-    const hash = await bcrypt.hash(password, 4);
+    const hash = await bcrypt.hash(password, 4); // hashing password before saving to database
     const newUser = new UserModel({ name, email, password: hash });
     await newUser.save();
 
@@ -33,7 +33,7 @@ async function HandelUserSignup(req, res) {
 }
 
 function isValidEmail(email) {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // for valid email format
   return emailRegex.test(email);
 }
 
@@ -50,8 +50,8 @@ async function HandelUserLogin(req, res) {
     if (user) {
       bcrypt.compare(password, user.password, (err, result) => {
         if (result) {
-          const encryptedString = cryptr.encrypt(user._id);
-          let token = jwt.sign({ userID: encryptedString }, process.env.Access_key, { expiresIn: "15m" });
+          const encryptedString = cryptr.encrypt(user._id); // encrypting userID
+          let token = jwt.sign({ userID: encryptedString }, process.env.Access_key, { expiresIn: "15m" }); // creating a jwt token
           return res.send({ "msg": "User logged in successfully", "token": token });
         } else {
           return res.status(401).send({ "msg": "Wrong credentials" });

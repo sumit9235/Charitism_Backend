@@ -6,7 +6,7 @@ const cryptr = new Cryptr(process.env.Cryptr_Secret, { encoding: 'base64', pbkdf
 async function CreateTodo(req, res) {
     const { todo, status } = req.body;
     const encryptedID = req.body.userID;
-    const userID = cryptr.decrypt(encryptedID);
+    const userID = cryptr.decrypt(encryptedID); // decrypting the token for further usage
     if (!todo ) {
         return res.status(201).send({ "error": " The key should be todo" });
     }
