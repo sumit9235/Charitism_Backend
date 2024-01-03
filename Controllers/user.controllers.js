@@ -1,6 +1,8 @@
 const { UserModel } = require('../Models/user.model.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const Cryptr = require('cryptr');
+const cryptr = new Cryptr(process.env.Cryptr_Secret, { encoding: 'base64', pbkdf2Iterations: 10000, saltLength: 10 });
 
 async function HandelUserSignup(req, res) {
   const { name, email, password } = req.body;
@@ -48,7 +50,8 @@ async function HandelUserLogin(req, res) {
     if (user) {
       bcrypt.compare(password, user.password, (err, result) => {
         if (result) {
-          let token = jwt.sign({ userID: user._id }, process.env.Access_key, { expiresIn: "15m" });
+          const encryptedString = cryptr.encrypt(user._id);
+          let token = jwt.sign({ userID: encryptedString }, process.env.Access_key, { expiresIn: "15m" });
           return res.send({ "msg": "User logged in successfully", "token": token });
         } else {
           return res.status(401).send({ "msg": "Wrong credentials" });

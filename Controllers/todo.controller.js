@@ -1,9 +1,12 @@
 const {TodoModel} = require('../Models/todo.model.js')
+const Cryptr = require('cryptr');
+const cryptr = new Cryptr(process.env.Cryptr_Secret, { encoding: 'base64', pbkdf2Iterations: 10000, saltLength: 10 });
 
 // Creating a todo
 async function CreateTodo(req, res) {
     const { todo, status } = req.body;
-    const userID = req.body.userID;
+    const encryptedID = req.body.userID;
+    const userID = cryptr.decrypt(encryptedID);
     if (!todo ) {
         return res.status(201).send({ "error": " The key should be todo" });
     }
