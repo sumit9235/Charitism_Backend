@@ -7,6 +7,12 @@ const { userRouter } = require('./routes/user.routes.js')
 const {auth}= require('./Middlewares/authentication.middleware.js')
 const { TodoRouter } = require('./routes/todo.routes.js');
 const server=express()
+server.use((err, req, res, next) => {
+    if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+      return res.status(400).json({ error: 'Invalid JSON in request body' });
+    }
+    next();
+  });
 server.use(express.json())
 server.use(cors())
 server.get("/",(req,res)=>{

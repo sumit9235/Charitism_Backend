@@ -2,9 +2,7 @@ const { UserModel } = require('../Models/user.model.js')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 async function HandelUserSignup(req, res) {
-    const { name, email, password } = req.body;
-  
-    // Check if input data is valid
+    const { name, email, password } = req.body;  
     if (
       (!name || typeof name !== 'string') ||
       (!email || typeof email !== 'string' || !isValidEmail(email)) || 
@@ -25,7 +23,7 @@ async function HandelUserSignup(req, res) {
       await newUser.save();
       res.status(201).send({ "msg": "New user has been registered" });
     } catch (err) {
-      res.status(500).send({ "msg": "Something went wrong while registering", "err": err.message });
+      res.status(400).send({ "msg": "Something went wrong while registering", "err": err.message });
     }
   }
 
@@ -57,7 +55,7 @@ async function HandelUserLogin(req, res) {
             res.status(404).send({ "msg": "User not found" });
         }
     } catch (err) {
-        res.status(500).send({ "msg": "Something went wrong", "err": err.message });
+        res.status(400).send({ "msg": "Something went wrong", "err": err.message });
     }
 }
 

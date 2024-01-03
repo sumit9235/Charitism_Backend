@@ -18,7 +18,7 @@ const auth = async (req, res, next) => {
         next();
     } catch (err) {
         console.error("Error in authentication middleware:", err.message);
-        return res.status(500).send("Internal server error");
+        res.status(400).send({"jwt token expired":err.message});
     }
 };
 

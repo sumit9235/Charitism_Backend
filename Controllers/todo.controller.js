@@ -10,13 +10,16 @@ async function CreateTodo(req, res) {
     if(status === undefined){
         return res.status(201).send({ "error": "The key should be status" });
     }
+    if (typeof status !== 'boolean') {
+        return res.status(400).send({ "error": "The 'status' field should be a boolean value" });
+      }
     try {
         const data = new TodoModel({ todo, status, userID });
         console.log(data)
         await data.save();
         res.status(201).send({ "msg": "New todo has been created" });
     } catch (error) {
-        res.status(500).send({ "msg": "Something went wrong while creating todo", "err": error.message });
+        res.status(400).send({ "msg": "Something went wrong while creating todo", "err": error.message });
     }
 }
 
@@ -29,7 +32,7 @@ async function GetTodo(req,res){
         }
          res.status(200).json({"msg":data})
     } catch (error) {
-         res.status(500).send(error.message)
+         res.status(400).send(error.message)
     }
 }
 
@@ -43,7 +46,7 @@ async function GetTodoById(req,res){
         }
          res.status(200).json({"msg":data})
     } catch (error) {
-        res.status(500).send(error.message)
+        res.status(400).send(error.message)
     }
 }
 
@@ -58,7 +61,7 @@ async function RemoveTodo(req,res){
         await TodoModel.findById({_id:id})
         res.status(200).send({"msg":"Todo Successfully Removed!!"})
     } catch (error) {
-         res.status(500).send(error.message)
+         res.status(400).send(error.message)
     }
 }
 
@@ -77,7 +80,7 @@ async function UpdateTodo(req,res){
         await TodoModel.findOneAndUpdate({_id:id},data,{ new: true });
         res.status(200).send({ "msg": "Todo data has been updated from database" });
     } catch (error) {
-        return res.status(500).send(error.message)
+        return res.status(400).send(error.message)
     }
 }
 
